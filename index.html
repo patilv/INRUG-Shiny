@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shiny for Interactive Application Development using R</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Shiny for Interactive Application Development using R">
+  <meta name="author" content="Vivek Patil">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/mycustom.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Shiny for Interactive Application Development using R</h1>
+    <h2></h2>
+    <p>Vivek Patil<br/>Associate Professor of Marketing, Gonzaga University</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>What is shiny</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Package from RStudio (<a href="http://shiny.rstudio.com/">http://shiny.rstudio.com/</a>)</li>
+<li>Interactive analysis of data</li>
+<li>Stand-alone applications and dashboards</li>
+</ul>
+
+<pre><code class="r">if (!require(&quot;devtools&quot;))
+  install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;rstudio/shiny&quot;)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Components of an application</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Two files</p>
+
+<ol>
+<li>User-Interface file (ui.R) - inputs and display of output in a customizable layout</li>
+<li>Server (server.R) - the work-horse that takes inputs, processes them, and creates outputs to display in the user-interface</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Developing a sample application using iris</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Sepal length and width and Petal length and width of 50 flowers from each of 3 species of iris - setosa, versicolor, and virginica</p>
+
+<ol>
+<li>View data (or a part of it)</li>
+<li>Summarize data </li>
+<li>2 graphs of data - a scatter plot and a box plot</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>View Data</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">head(iris,5)
+</code></pre>
+
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+</code></pre>
+
+<pre><code class="r"># tail(iris,n) 
+# iris
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Summarize Data</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">summary(iris)
+</code></pre>
+
+<pre><code>##   Sepal.Length   Sepal.Width    Petal.Length   Petal.Width 
+##  Min.   :4.30   Min.   :2.00   Min.   :1.00   Min.   :0.1  
+##  1st Qu.:5.10   1st Qu.:2.80   1st Qu.:1.60   1st Qu.:0.3  
+##  Median :5.80   Median :3.00   Median :4.35   Median :1.3  
+##  Mean   :5.84   Mean   :3.06   Mean   :3.76   Mean   :1.2  
+##  3rd Qu.:6.40   3rd Qu.:3.30   3rd Qu.:5.10   3rd Qu.:1.8  
+##  Max.   :7.90   Max.   :4.40   Max.   :6.90   Max.   :2.5  
+##        Species  
+##  setosa    :50  
+##  versicolor:50  
+##  virginica :50  
+##                 
+##                 
+## 
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Plot 1 - Scatter plot</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(ggplot2)
+ggplot(iris,aes(x=Sepal.Length,y=Sepal.Width,color=Species))+geom_point()
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-4.png" alt="plot of chunk unnamed-chunk-4"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>Plot 2 - Box plot</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">ggplot(iris,aes(x=Species,y=Sepal.Length))+geom_boxplot()
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-5.png" alt="plot of chunk unnamed-chunk-5"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Recap</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>View data (or a section of it) (using <code>head</code>, <code>tail</code>, or just the entire data)</li>
+<li>Summarize data (using <code>summary</code>)</li>
+<li>2 graphs of data - a scatter plot (x= Sepal.Length, y= Sepal.Width) and a box plot (how distribution of Sepal.Length varied across the three Species)</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>Imagine the difficulty below</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>What if one wanted the ability to specify any variable for x and y axes of the scatter plot?</li>
+<li>What if one wanted to alter the variable whose distribution one wanted to plot across the three species in the box plot?</li>
+<li>What if one wanted to select a subset of the data (any range of any of the 4 numeric variables) and wanted to see how the data, summary, and the two plots changed?</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>Let&#39;s work on the user interface</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Off-the-shelf widgets for inputs: <a href="http://shiny.rstudio.com/gallery/widget-gallery.html">http://shiny.rstudio.com/gallery/widget-gallery.html</a></p>
+
+<iframe src="http://shiny.rstudio.com/gallery/widget-gallery.html"></iframe>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Our Widgets</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>One &quot;Select box&quot; each for the x-variable and y-variable (for scatter plot), and one &quot;Select box&quot; for the dvariable (for distribution to study in box plot) - The options for each of the 4 select boxes will be the same, the four numeric variables</li>
+<li>One &quot;Slider range&quot; for each of the four numeric variables - the minimum and maximum for each &quot;Slider range&quot; should be the minimum and maximum of the variable they are representing. Default state of each: The entire range (complete dataset)</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>Input widgets for user interface</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># The 5th variable in the iris dataset is not numeric - Species - Not a choice option 
+selectInput(&quot;xvar&quot;, &quot;x-variable:&quot;, choices=names(iris[,-5]))
+selectInput(&quot;yvar&quot;, &quot;y-variable:&quot;, choices=names(iris[,-5]),selected = names(iris[2]))
+selectInput(&quot;dvar&quot;, &quot;Distribution of which variable for box plot?&quot;, choices=names(iris[,-5]), selected = names(iris[3]))
+
+sliderInput(&quot;Sepal.Length&quot;, label = &quot;Sepal.Length&quot;, min = min(iris$Sepal.Length), max = max(iris$Sepal.Length), 
+            value=c(min(iris$Sepal.Length),max(iris$Sepal.Length)))
+
+sliderInput(&quot;Sepal.Width&quot;, label = &quot;Sepal.Width&quot;, min = min(iris$Sepal.Width), 
+                       max = max(iris$Sepal.Width), value = c(min(iris$Sepal.Width),max(iris$Sepal.Width)))
+
+sliderInput(&quot;Petal.Length&quot;, label = &quot;Petal.Length&quot;, min = min(iris$Petal.Length), 
+                       max = max(iris$Petal.Length), value = c(min(iris$Petal.Length),max(iris$Petal.Length)))
+
+sliderInput(&quot;Petal.Width&quot;, label = &quot;Petal.Width&quot;, min = min(iris$Petal.Width), 
+                       max = max(iris$Petal.Width), value = c(min(iris$Petal.Width),max(iris$Petal.Width)))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>Output spots in ui.r</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Source: <a href="http://shiny.rstudio.com/tutorial/lesson4/">http://shiny.rstudio.com/tutorial/lesson4/</a></p>
+
+<table><thead>
+<tr>
+<th>Output function</th>
+<th>Output</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>htmlOutput</td>
+<td>raw HTML</td>
+</tr>
+<tr>
+<td>imageOutput</td>
+<td>image</td>
+</tr>
+<tr>
+<td>plotOutput</td>
+<td>plot</td>
+</tr>
+<tr>
+<td>tableOutput</td>
+<td>table</td>
+</tr>
+<tr>
+<td>textOutput</td>
+<td>text</td>
+</tr>
+<tr>
+<td>uiOutput</td>
+<td>raw HTML</td>
+</tr>
+</tbody></table>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>Output Spots and their unique names in ui.R</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><code>dataTableOutput(outputId=&quot;subsetdata&quot;)</code></p>
+
+<p>To present an interactive table of the entire data using the jQuery library <code>DataTables</code> </p>
+
+<p><code>verbatimTextOutput(&quot;summary&quot;)</code></p>
+
+<p>For a verbatim textOutput of the <code>summary</code> function</p>
+
+<p><code>plotOutput(&quot;scatterplot&quot;)</code></p>
+
+<p><code>plotOutput(&quot;boxplot&quot;)</code></p>
+
+<p>For each of the two plots - the scatter plot and the box plot</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>Laying out the ui.R</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Source: <a href="http://shiny.rstudio.com/articles/layout-guide.html">http://shiny.rstudio.com/articles/layout-guide.html</a></p>
+
+<iframe src="http://shiny.rstudio.com/articles/layout-guide.html"></iframe>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>The ui with no output</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Code of this intermediate app: <a href="https://github.com/patilv/INRUG-ShinyUI">https://github.com/patilv/INRUG-ShinyUI</a></p>
+
+<iframe src="https://patilv.shinyapps.io/INRUG-ShinyUI/"></iframe>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-17" style="background:;">
+  <hgroup>
+    <h2>server.R</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Take inputs from sliders and subset the data
+
+<ul>
+<li>Display resulting subset using datatable (name: &quot;subsetdata&quot; in ui.r)</li>
+</ul></li>
+<li>Compute summary of subsetted data and ship it off to &quot;summary&quot; in ui.r</li>
+<li>Take inputs for x and y variable 
+
+<ul>
+<li>Create scatter plot using the <code>ggplot2</code> package and ship this off to &quot;scatterplot&quot; in ui.r</li>
+</ul></li>
+<li>Take input for dvar (for distribution variable) and create box plot
+
+<ul>
+<li>Create box plot using <code>ggplot2</code> and ship this last piece off to &quot;boxplot&quot; in ui.r</li>
+</ul></li>
+</ul>
+
+<p><strong>Don&#39;t forget, the input variable names in the server should be the same ones the ui.r is sending to it.</strong></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>Subsetting data</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Creating <code>dataset</code> that is reactive to the inputs from the 4 sliders </li>
+<li>Each of those sliders returns two values, the lower and upper bounds of the range</li>
+</ul>
+
+<pre><code class="r">dataset=reactive(iris[(iris$Sepal.Length&gt;=input$Sepal.Length[1] &amp; iris$Sepal.Length&lt;=input$Sepal.Length[2]&amp;
+                            iris$Sepal.Width&gt;=input$Sepal.Width[1] &amp; iris$Sepal.Width&lt;=input$Sepal.Width[2]&amp;
+                               iris$Petal.Length&gt;=input$Petal.Length[1] &amp; iris$Petal.Length&lt;=input$Petal.Length[2]&amp;
+                                  iris$Petal.Width&gt;=input$Petal.Width[1] &amp; iris$Petal.Width&lt;=input$Petal.Width[2]),])
+</code></pre>
+
+<p>More information on &quot;reactivity&quot; can be found here: <a href="http://shiny.rstudio.com/articles/reactivity-overview.html">http://shiny.rstudio.com/articles/reactivity-overview.html</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Rendering the outputs</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Source: <a href="http://shiny.rstudio.com/tutorial/lesson4/">http://shiny.rstudio.com/tutorial/lesson4/</a></p>
+
+<table><thead>
+<tr>
+<th>Render function</th>
+<th>Creates</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>renderImage</td>
+<td>images (saved as a link to a source file)</td>
+</tr>
+<tr>
+<td>renderPlot</td>
+<td>plots</td>
+</tr>
+<tr>
+<td>renderPrint</td>
+<td>any printed output</td>
+</tr>
+<tr>
+<td>renderTable</td>
+<td>data frame, matrix, other table like structures</td>
+</tr>
+<tr>
+<td>renderText</td>
+<td>character strings</td>
+</tr>
+<tr>
+<td>renderUI</td>
+<td>a Shiny tag object or HTML</td>
+</tr>
+</tbody></table>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>Creating the outputs</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">output$subsetdata &lt;- renderDataTable(dataset(),options=list(pageLength=10)) # for Data table
+
+output$summary &lt;- renderPrint(summary(dataset()))
+
+output$scatterplot=renderPlot(ggplot(dataset(),aes_string(x=input$xvar, y=input$yvar,color=&quot;Species&quot;))+ geom_point()+ggtitle(&quot;Scatter Plot&quot;))
+
+output$boxplot=renderPlot(ggplot(dataset(),aes_string(x=&quot;Species&quot;,y=input$dvar))+ geom_boxplot()+ ggtitle(&quot;Box Plot&quot;))
+</code></pre>
+
+<ul>
+<li>Note how the reactive dataset is referred to as <code>dataset()</code></li>
+<li>Since the inputs from &quot;Select box&quot; show up as strings, we use <code>aes_string</code> instead of <code>aes</code> in our ggplot creations</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>Putting it all together with some instructions and messages</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Code for final app: <a href="https://github.com/patilv/INRUG-ShinyFinal">https://github.com/patilv/INRUG-ShinyFinal</a></p>
+
+<p>App in new window: <a href="https://patilv.shinyapps.io/INRUG-ShinyFinal/">https://patilv.shinyapps.io/INRUG-ShinyFinal/</a></p>
+
+<iframe src="https://patilv.shinyapps.io/INRUG-ShinyFinal/"></iframe>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-22" style="background:;">
+  <hgroup>
+    <h2>Deploying/Sharing an Application</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Source: <a href="http://shiny.rstudio.com/tutorial/lesson7/">http://shiny.rstudio.com/tutorial/lesson7/</a></p>
+
+<p>if {R and shiny available on computer} 
+{</p>
+
+<ul>
+<li>Two R files</li>
+<li>runURL (from any web link to a zip file comprising the two R files)</li>
+<li>runGist (Try: <code>runGist(&quot;460f7ee20def9a506714&quot;)</code>)</li>
+<li>runGitHub (Try: <code>runGitHub(&quot;INRUG-ShinyFinal&quot;,&quot;patilv&quot;)</code>)</li>
+</ul>
+
+<p>}
+else
+{</p>
+
+<ul>
+<li><a href="http://www.shinyapps.io/">http://www.shinyapps.io/</a>  - see <a href="https://patilv.shinyapps.io/INRUG-ShinyFinal/">https://patilv.shinyapps.io/INRUG-ShinyFinal/</a></li>
+<li>Shiny Server - Open Source or Professional <a href="http://www.rstudio.com/products/shiny/shiny-server/">http://www.rstudio.com/products/shiny/shiny-server/</a><br></li>
+</ul>
+
+<p>}</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-23" style="background:;">
+  <hgroup>
+    <h2>Few Resources</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><a href="http://shiny.rstudio.com/">http://shiny.rstudio.com/</a></li>
+<li>Sample apps I have worked on: <a href="http://patilv.com/tags/#Shiny">http://patilv.com/tags/#Shiny</a></li>
+<li>A good collection of other shiny apps, many with the code: <a href="http://www.showmeshiny.com/">http://www.showmeshiny.com/</a></li>
+<li>Search on R-Bloggers: <a href="http://www.r-bloggers.com/?s=shiny">http://www.r-bloggers.com/?s=shiny</a> </li>
+</ul>
+
+<p>This presentation was created using slidify and the code for it can be found at: <a href="https://github.com/patilv/INRUG-Shiny">https://github.com/patilv/INRUG-Shiny</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='What is shiny'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Components of an application'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Developing a sample application using iris'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='View Data'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Summarize Data'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Plot 1 - Scatter plot'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Plot 2 - Box plot'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Recap'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='Imagine the difficulty below'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='Let&#39;s work on the user interface'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Our Widgets'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='Input widgets for user interface'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='Output spots in ui.r'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='Output Spots and their unique names in ui.R'>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='Laying out the ui.R'>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='The ui with no output'>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='server.R'>
+         17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='Subsetting data'>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Rendering the outputs'>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='Creating the outputs'>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='Putting it all together with some instructions and messages'>
+         21
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title='Deploying/Sharing an Application'>
+         22
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title='Few Resources'>
+         23
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
